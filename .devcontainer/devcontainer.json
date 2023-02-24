@@ -1,6 +1,9 @@
 {
   "image": "mcr.microsoft.com/devcontainers/python",
-  "postCreateCommand": "pipx install bikeshed && bikeshed update",
+  "features": {
+    "ghcr.io/devcontainers/features/node": {}
+  },
+  "postCreateCommand": "pipx install bikeshed && bikeshed update && npm install -g http-server",
   "waitFor": "postCreateCommand",
   "customizations": {
     "vscode": {

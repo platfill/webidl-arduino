@@ -9,8 +9,7 @@ conc() (
   wait -n
 )
 
-rm -rf dist
-mkdir -p dist
+rsync -a --delete --exclude=*.bs --delete-excluded src/ dist/
 conc \
   'bikeshed watch src/index.bs dist/index.html' \
-  'python -m http.server -d dist'
+  'http-server -c-1 dist'
