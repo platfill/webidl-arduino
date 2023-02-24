@@ -1,0 +1,37 @@
+# C++ binding # {#cpp-binding}
+
+This specification focuses on the C++ binding targeted for embedded systems. Of
+which, the Arduino platform is the most prevalent. This section outlines the
+C++ bindings _specific to the Arduino platform_. Other platforms that support
+the Arduino API are included in the scope of this specification.
+
+## Names ## {#cpp-names}
+
+Arduino C++ uses a `camelCase` naming convention. This is the same as the Web
+IDL specification's naming convention. Most things defined in Web IDL are
+`camelCase` and thus transition without modification.
+
+However, since C++ does have some reserved words
+
+<div class="note">
+
+As of February 23rd, 2023, the following keywords are reserved in C++:
+
+```cpp
+alignas, alignof, and, and_eq, asm, atomic_cancel, atomic_commit,
+atomic_noexcept, auto, bitand, bitor, bool, break, case, catch, char, char8_t,
+char16_t, char32_t, class, compl, concept, const, consteval, constexpr,
+constinit, const_cast, continue, co_await, co_return, co_yield, decltype,
+default, delete, do, double, dynamic_cast, else, enum, explicit, export, extern,
+false, float, for, friend, goto, if, inline, int, long, mutable, namespace, new,
+noexcept, not, not_eq, nullptr, operator, or, or_eq, private, protected, public,
+reflexpr, register, reinterpret_cast, requires, return, short, signed, sizeof,
+static, static_assert, static_cast, struct, switch, synchronized, template,
+this, thread_local, throw, true, try, typedef, typeid, typename, union,
+unsigned, using, virtual, void, volatile, wchar_t, while, xor, xor_eq
+```
+
+You can find an up-to-date list of reserved words on cppreference.com
+(https://en.cppreference.com/w/cpp/keyword).
+
+</div>

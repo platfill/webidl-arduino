@@ -1,0 +1,14 @@
+# Introduction # {#intro}
+
+Note: This section is non-normative.
+
+This document describes how functions, methods, interfaces, and other
+specifications defined in Web IDL can be exposed to an embedded C++ environment
+without disregarding the goals and principles of embedded systems.
+
+1. Define rules to map Arduino and other embedded C++ environments' types to
+    existing Web IDL types.
+2. Formally outline conventions for naming and organizing Web IDL definitions in
+    a way that is compatible with the C++ language.
+3. Consider the performance and memory constraints of embedded systems while
+    working with potentially large Web IDL definitions.

@@ -1,0 +1,12 @@
+<pre class="metadata">
+Title: Arduino-specific C++ language binding for WebIDL
+Shortname: webidl-arduino
+Status: LS
+Repository: platfill/webidl-arduino
+Editor: Jacob Hummer, jcbhmr@outlook.com, https://jcbhmr.me/
+Markup Shorthands: markdown yes
+Abstract: Defines types equivalences & conventions for WebIDL to be used in Arduino C++ environments.
+</pre>
+
+<pre class="include">path: intro.bs</pre>
+<pre class="include">path: cpp-binding.bs</pre>
