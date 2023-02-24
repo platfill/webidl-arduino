@@ -1,0 +1,94 @@
+/**!
+ * CC0-1.0 License [1]: To the extent possible under law, the contributors have
+ * waived all copyright and related or neighboring rights to this work. [2]
+ *
+ * The source code for this file is a concatenation of the following files but
+ * only those selectors and parts that relate to the .warning CSS class:
+ *
+ * 1. https://resources.whatwg.org/spec.css
+ * 2. https://resources.whatwg.org/standard.css
+ * 3. https://resources.whatwg.org/standard-shared-with-dev.css
+ *
+ * [1]: http://creativecommons.org/publicdomain/zero/1.0/
+ * [2]: https://resources.whatwg.org/README.md
+ */
+
+/* 1. https://resources.whatwg.org/spec.css */
+.warning::before {
+  content: "\26A0 Warning!";
+}
+
+/* 2. https://resources.whatwg.org/standard.css */
+.warning {
+  margin: 1.5em 0;
+  padding: 0.5em 1em;
+}
+li > .warning {
+  margin: 1em 0;
+}
+.warning > :first-child,
+.warning > .self-link:first-child + * {
+  margin-top: 0;
+}
+.warning > :last-child {
+  margin-bottom: 0;
+}
+.warning {
+  position: relative;
+  margin-top: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+li > .warning {
+  margin-top: 1.5em;
+}
+.warning::before {
+  padding: 0.15em 0.25em;
+  position: absolute;
+  top: -0.8em;
+  left: -0.8em;
+  color: white;
+}
+@media (max-width: 767px) {
+  .warning {
+    margin-top: 2em;
+    padding-top: 1.5em;
+    padding-bottom: 0.5em;
+  }
+  .warning::before {
+    top: -0.3em;
+    left: -0.3em;
+  }
+}
+span.warning {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+span.warning {
+  padding-left: 6em;
+}
+span.warning::before {
+  left: 0;
+  top: -0.25em;
+}
+.warning {
+  color: #d50606;
+  background: #ffffca;
+  font-weight: bolder;
+  font-style: italic;
+}
+.warning::before {
+  color: yellow;
+  background: #d50606;
+}
+.warning em,
+.warning i,
+.warning var,
+.warning cite {
+  font-style: normal;
+}
+
+/* 3. https://resources.whatwg.org/standard-shared-with-dev.css */
+.warning .mdn-anno {
+  right: -9.7em;
+}
