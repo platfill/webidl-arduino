@@ -1,0 +1,7 @@
+# Ignore the HTML build directory. Some specifications will check in their HTML
+# build output, but most will not.
+dist
+
+# Ignore all log files. Who knows when you'll want to pipe something to a log!
+logs
+*.log
