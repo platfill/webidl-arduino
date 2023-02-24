@@ -1,8 +1,11 @@
 # C++ binding # {#cpp-binding}
 
+This section describes how definitions written with Web IDL correspond to
+particular constructs in Arduino C++.
+
 This specification focuses on the C++ binding targeted for embedded systems. Of
 which, the Arduino platform is the most prevalent. This section outlines the
-C++ bindings _specific to the Arduino platform_. Other platforms that support
+C++ bindings *specific to the Arduino platform*. Other platforms that support
 the Arduino API are included in the scope of this specification.
 
 ## Names ## {#cpp-names}
@@ -11,7 +14,15 @@ Arduino C++ uses a `camelCase` naming convention. This is the same as the Web
 IDL specification's naming convention. Most things defined in Web IDL are
 `camelCase` and thus transition without modification.
 
-However, since C++ does have some reserved words
+Since Arduino C++ has a number of reserved words in the language, some
+identifiers of C++ constructs corresponding to IDL definitions need to be
+escaped to avoid conflicts. A |name| is <dfn export>Aruindo C++ escaped</dfn> as
+follows:
+
+1. If the |name| is a Arduino C++ reserved word, then the |escapedName| is the
+    |name| suffixed with a U+005F LOW LINE ("_") character.
+2. Otherwise, the |name| is not an Arduino C++ reserved word. The |escapedName|
+    is simply the name.
 
 <div class="note">
 
@@ -31,7 +42,607 @@ this, thread_local, throw, true, try, typedef, typeid, typename, union,
 unsigned, using, virtual, void, volatile, wchar_t, while, xor, xor_eq
 ```
 
-You can find an up-to-date list of reserved words on cppreference.com
-(https://en.cppreference.com/w/cpp/keyword).
+You can find an up-to-date list of reserved words on
+[cppreference.com](https://en.cppreference.com/w/cpp/keyword).
+
+</div>
+
+<div class="note">
+
+As of February 23rd, 2023, the following functions and constants are reserved by
+the `<Arduino.h>` library header:
+
+```cpp
+digitalRead(), digitalWrite(), pinMode(), analogRead(), analogReference(),
+analogWrite(), analogReadResolution(), analogWriteResolution(), noTone(),
+pulseIn(), pulseInLong(), shiftIn(), shiftOut(), tone(), delay(),
+delayMicroseconds(), micros(), millis(), abs(), constrain(), map(), max(),
+min(), pow(), sq(), sqrt(), cos(), sin(), tan(), isAlpha(), isAlphaNumeric(),
+isAscii(), isControl(), isDigit(), isGraph(), isHexadecimalDigit(),
+isLowerCase(), isPrintable(), isPunct(), isSpace(), isUpperCase(),
+isWhitespace(), random(), randomSeed(), bit(), bitClear(), bitRead(), bitSet(),
+bitWrite(), highByte(), lowByte(), attachInterrupt(), detachInterrupt(),
+interrupts(), noInterrupts(), Serial, SPI, Stream, Wire, Keyboard, Mouse, HIGH,
+LOW, INPUT, OUTPUT, INPUT_PULLUP, LED_BUILTIN, true, false, Floating Point
+Constants, Integer Constants, (unsigned int), (unsigned long), byte(), char(),
+float(), int(), long(), word(), array, boolean, byte, size_t, string, String(),
+PROGMEM, loop(), setup()
+```
+
+You can find an up-to-date list of defined functions and constants on the
+[Arduino reference website](https://www.arduino.cc/reference/).
+
+</div>
+
+Note: There are lots of C++ STL functions. Far too many to list here. You may
+consult the [C++ standard](https://isocpp.org/std/the-standard) or
+[cppreference.com](https://cppreference.com/).
+
+## C++ type mapping ## {#cpp-type-mapping}
+
+This section describes how types in the IDL map to types in Arduino C++.
+
+Each sub-section below describes how values of a given IDL type are represented
+in Arduino C++. For each IDL type, an appropriate similar native type is
+defined. If no native type is defined, then the type must be implemented
+according to its logic inside of a given C++ runtime environment.
+
+### `any` ### {#cpp-any}
+
+The `any` type is a special type that can represent any other type. There should
+**not** be a native type for `any`. Instead, the `any` type should be replaced
+with a more specific type if possible, or else narrowed to deviate from the IDL
+specification. If applicable, it may instead be replaced with a `T` template
+type.
+
+<div class="example">
+
+```webidl
+interface Foo {
+  any bar();
+};
+```
+
+```cpp
+class Foo {
+ public:
+  template <class T>
+  T bar() {
+    return T();
+  }
+};
+```
+
+</div>
+
+### `void` ### {#cpp-void}
+
+The only place that the `void` type may appear in IDL is as the return type of
+an operation. Methods on C++ objects that implement an operation whose IDL
+specifies a `void` return type must be declared to have a return type of `void`.
+
+### `boolean` ### {#cpp-boolean}
+
+IDL boolean values are represented by Arduino C++ `bool` values.
+
+The result of converting an Arduino C++ `bool` value to an IDL value is the IDL
+`boolean` that represents the same truth value as the Arduino C++ boolean.
+
+The result of converting an IDL `boolean` value to an Arduino C++ value is the
+Arduino C++ `boolean` that represents the same truth value as the IDL boolean.
+
+### `byte` ### {#cpp-byte}
+
+Note: Arduino C++ uses `unsigned char` for `byte` values. This is the same as
+the IDL `octet` type. The IDL `byte` type is a signed type, with a range of
+[-128, 127] and thus needs conversion rules.
+
+Issue: Write conversion rules for Web IDL `byte` to Arduino C++ `byte`
+
+### `octet` ### {#cpp-octet}
+
+Issue: Write conversion rules for Web IDL `octet` to Arduino C++ `byte`
+
+### `short` ### {#cpp-short}
+
+IDL `short` values are represented by Arduino C++ `short` values.
+
+The result of converting a Arduino C++ `short` value to an IDL value is the IDL
+`short` that represents the same numeric value as the Arduino C++ `short`.
+
+The result of converting an IDL `short` value to a Arduino C++ value is the
+Arduino C++ `short` that represents the same numeric value as the IDL `short`.
+
+### `unsigned short` ### {#cpp-unsigned-short}
+
+IDL `unsigned short` values are represented by Arduino C++ `unsigned short`
+
+The result of converting a Arduino C++ `unsigned short` value to an IDL value is
+the IDL `unsigned short` that represents the same numeric value as the Arduino
+C++ `unsigned short`.
+
+The result of converting an IDL `unsigned short` value to a Arduino C++ value is
+the Arduino C++ `unsigned short` that represents the same numeric value as the
+IDL `unsigned short`.
+
+### `long` ### {#cpp-long}
+
+IDL `long` values are represented by Arduino C++ `long` values.
+
+The result of converting a Arduino C++ `long` value to an IDL value is the IDL
+`long` that represents the same numeric value as the Arduino C++ `long`.
+
+The result of converting an IDL `long` value to a Arduino C++ value is the
+Arduino C++ `long` that represents the same numeric value as the IDL `long`.
+
+### `unsigned long` ### {#cpp-unsigned-long}
+
+IDL `unsigned long` values are represented by Arduino C++ `unsigned long`
+values.
+
+The result of converting a Arduino C++ `unsigned long` value to an IDL value is
+the IDL `unsigned long` that represents the same numeric value as the Arduino
+C++ `unsigned long`.
+
+The result of converting an IDL `unsigned long` value to a Arduino C++ value is
+the Arduino C++ `unsigned long` that represents the same numeric value as the
+IDL `unsigned long`.
+
+### `long long` ### {#cpp-long-long}
+
+IDL `long long` values are represented by Arduino C++ `long long` values.
+
+The result of converting a Arduino C++ `long long` value to an IDL value is the
+IDL `long long` that represents the same numeric value as the Arduino C++ `long
+long`.
+
+The result of converting an IDL `long long` value to a Arduino C++ value is the
+Arduino C++ `long long` that represents the same numeric value as the IDL `long
+long`.
+
+### `unsigned long long` ### {#cpp-unsigned-long-long}
+
+IDL `unsigned long long` values are represented by Arduino C++ `unsigned long
+long`
+
+The result of converting a Arduino C++ `unsigned long long` value to an IDL
+value is the IDL `unsigned long long` that represents the same numeric value as
+the Arduino C++ `unsigned long long`.
+
+The result of converting an IDL `unsigned long long` value to a Arduino C++
+value is the Arduino C++ `unsigned long long` that represents the same numeric
+value as the IDL `unsigned long long`.
+
+### `float` ### {#cpp-float}
+
+Issue: Write conversion rules for Web IDL `float` to Arduino C++ `float`
+
+### `unrestricted float` ### {#cpp-unrestricted-float}
+
+Issue: Write conversion rules for Web IDL `unrestricted float` to Arduino C++
+`float`
+
+### `double` ### {#cpp-double}
+
+Issue: Write conversion rules for Web IDL `double` to Arduino C++ `double`
+
+### `unrestricted double` ### {#cpp-unrestricted-double}
+
+Issue: Write conversion rules for Web IDL `unrestricted double` to Arduino C++
+`double`
+
+### `DOMString` ### {#cpp-domstring}
+
+IDL `DOMString` values are represented by Arduino C++ `String` values.
+
+The result of converting a Arduino C++ `String` value to an IDL value is the IDL
+`DOMString` that represents the same sequence of code units as the Arduino C++
+`String`.
+
+The result of converting an IDL `DOMString` value to a Arduino C++ value is the
+Arduino C++ `String` that represents the same sequence of code units as the IDL
+`DOMString`.
+
+### `ByteString` ### {#cpp-bytestring}
+
+IDL `ByteString` values are represented by Arduino C++ `String` values.
+
+The result of converting a Arduino C++ `String` value to an IDL value is the IDL
+`ByteString` that represents the same sequence of bytes as the Arduino C++
+`String`.
+
+The result of converting an IDL `ByteString` value to a Arduino C++ value is the
+Arduino C++ `String` that represents the same sequence of bytes as the IDL
+`ByteString`.
+
+### `USVString` ### {#cpp-usvstring}
+
+This specification does not consider `USVString` to be a distinct type from
+`DOMString`. The conversion rules for `USVString` are the same as for
+`DOMString`.
+
+<div class="advisement">
+
+This is a deliberate departure from the Web IDL specification. The Web IDL
+specification requires that `USVString` be a distinct type that disallows
+unpaired surrogates. We have chosen **not** to follow this to avoid the extra
+string processing time and memory.
+
+</div>
+
+### `object` ### {#cpp-object}
+
+Similar to the `any` type, the `object` type is a catch-all type that can
+represent any value.  There should not be a native type for `object`. Instead,
+the `object` type should be replaced with a more specific type if possible, or
+else narrowed to deviate from the IDL specification. If applicable, it may
+instead be replaced with a `T` template type.
+
+### Interface types ### {#cpp-interface}
+
+IDL interface type values are represented by C++ values or references of the
+corresponding C++ class type.
+
+<div class="example">
+
+```webidl
+interface MyInterface {
+  constructor();
+  void doSomething();
+};
+```
+
+```cpp
+class MyInterface {
+ public:
+  MyInterface() {
+    // ...
+  }
+ public:
+  void doSomething() {
+    // ...
+  }
+};
+
+void setup() {
+  auto x = MyInterface();
+  x.doSomething();
+}
+```
+
+</div>
+
+### Dictionary types ### {#cpp-dictionary}
+
+IDL dictionary type values are represented by C++ values, pointers, or
+references to objects of the corresponding struct type. These struct definitions
+may be hidden from direct inclusion.
+
+<div class="example">
+
+```webidl
+dictionary MyDictionary {
+  DOMString name;
+};
+```
+
+```cpp
+struct MyDictionary {
+  String name;
+};
+
+void setup() {
+  auto x = MyDictionary{
+    .name = "foo",
+  };
+}
+```
+
+</div>
+
+### Enumeration types ### {#cpp-enumeration}
+
+IDL enumeration type values are represented by C++11 `enum class` values of
+their appropriate parent type.
+
+No strings are used in the C++ representation of an enumeration type. The WebIDL
+strings are first converted to an `UPPER_CASE` version of the string value
+before being defined as a constant in the `enum class`.
+
+<div class="example">
+
+```webidl
+enum MyEnum {
+  "foo",
+  "bar",
+};
+```
+
+```cpp
+enum class MyEnum {
+  FOO,
+  BAR,
+};
+
+void setup() {
+  auto x = MyEnum::FOO;
+}
+```
+
+</div>
+
+### Callback function types ### {#cpp-callback-function}
+
+Issue: Write conversion rules for Web IDL callback function types to Arduino C++
+function pointers
+
+### Nullable types `T?` ### {#cpp-nullable}
+
+IDL nullable type `T` values are represented by C++ `std::optional<T>` values.
+
+<div class="advisement">
+
+This uses part of the C++ STL which is **not included** in the `<Arduino.h>`
+header. You will need to `#include <optional>` in your code.
+
+</div>
+
+<div class="example">
+
+```webidl
+interface MyInterface {
+  DOMString? doSomething();
+};
+```
+
+```cpp
+class MyInterface {
+ public:
+  std::optional<String> doSomething() {
+    if (random(0, 100) < 50) {
+      return "foo";
+    } else {
+      return std::nullopt;
+    }
+  }
+};
+
+void setup() {
+  auto x = MyInterface();
+  auto y = x.doSomething();
+  if (y) {
+    Serial.println(*y);
+  } else {
+    Serial.println("no value");
+  }
+}
+```
+
+</div>
+
+Note: When compared to returning a possibly-`NULL` pointer of type `T*`, the
+`std::optional<T>` type is more practical, as it does not require a heap
+allocation. It also doesn't require the user to remember to `delete` the
+pointer.
+
+### Sequence types `sequence<T>` ### {#cpp-sequence}
+
+IDL sequence type `sequence<T>` values are represented C++ STL `std::vector<T>`
+or an equivalent implementation.
+
+<div class="advisement">
+
+We use `std::vector<T>` as our primary sequence and array type. This is due to
+the alternative C arrays being unweildy for beginners.
+
+</div>
+
+<div class="example">
+
+```webidl
+interface MyInterface {
+  sequence<DOMString> doSomething();
+};
+```
+
+```cpp
+class MyInterface {
+ public:
+  std::vector<String> doSomething() {
+    return {
+      "foo",
+      "bar",
+    };
+  }
+};
+
+void setup() {
+  auto x = MyInterface();
+  auto y = x.doSomething();
+  for (auto& z : y) {
+    Serial.println(z);
+  }
+}
+```
+
+</div>
+
+### Record types `record<K, V>` ### {#cpp-record}
+
+IDL record type `record<K, V>` values are represented by C++ `std::map<K, V>` or
+an equivalent implementation.
+
+<div class="advisement">
+
+This uses part of the C++ STL which is **not included** in the `<Arduino.h>`
+header. You will need to `#include <map>` in your code.
+
+</div>
+
+<div class="example">
+
+```webidl
+interface MyInterface {
+  doSomething(record<DOMString, DOMString> inputs);
+};
+```
+
+```cpp
+class MyInterface {
+ public:
+  void doSomething(std::map<String, String> inputs) {
+    for (auto& [key, value] : inputs) {
+      Serial.println(key + ": " + value);
+    }
+  }
+};
+
+void setup() {
+  auto x = MyInterface();
+  x.doSomething({
+    {"foo", "bar"},
+    {"baz", "qux"},
+  });
+}
+```
+
+</div>
+
+### Union types ### {#cpp-union}
+
+Union types are represented by C++ `std::variant<T...>` or an equivalent
+implementation. If they are defined as arguments to a function, implementations
+are encouraged to provide specialized overloads for each type in the union thus
+eliminating the need for a `std::variant` at runtime.
+
+<div class="advisement">
+
+You will need to `#include <variant>` in your code.
+
+</div>
+
+<div class="example">
+
+```webidl
+interface MyInterface {
+  void doSomething((DOMString or sequence<DOMString>) inputs);
+};
+```
+
+```cpp
+class MyInterface {
+ public:
+  void doSomething(String inputs) {
+    Serial.println(inputs);
+  }
+  void doSomething(std::vector<String> inputs) {
+    for (auto& input : inputs) {
+      Serial.println(input);
+    }
+  }
+};
+
+void setup() {
+  auto x = MyInterface();
+  x.doSomething("foo");
+  x.doSomething({"foo", "bar"});
+}
+```
+
+</div>
+
+### Promise types `Promise<T>` ### {#cpp-promise}
+
+Advisement: This is optional and not required for a valid implementation.
+
+Since Arduinos are single-threaded, there is no way to implement a `Promise`
+that truly offloads the work to another thread.
+
+The only idiomatic way to perform an operation in a non-blocking manner is to
+constantly poll to operation in the `loop()` function. This is not ideal, but
+it is the best we can do.
+
+Note: If your target platform has its own custom library that fits this concept
+better, you are encouraged to use that instead. This is the most common way that
+promises are implemented in Arduino-focused libraries.
+
+<div class="example">
+
+```cpp
+Promise networkA;
+Promise networkB;
+void setup() {
+  networkA = NetworkOperation();
+  networkB = NetworkOperation();
+  networkA.then([](String result) {
+    Serial.println(result);
+  });
+  networkB.then([](String result) {
+    Serial.println(result);
+  });
+}
+void loop() {
+  networkA.yield();
+  networkB.yield();
+}
+```
+
+</div>
+
+```cpp
+template <class T>
+class Promise {
+  void then(std::function<void(T)> callback);
+  // Conceptually similar to the yield() function in Arduino.
+  void yield();
+
+  // These should only be called by the library code.
+  void resolve(T value);
+  void reject(String reason);
+};
+```
+
+Issue: Is there a better way to do this?
+
+Note: The reason we don't return another promise from the `then()` function is
+to avoid allocating an entirely new data structure with a vector list of
+potential functions only for it to be discarded. Instead, everything is *manual*
+and up to you.
+
+<div class="example">
+
+```webidl
+interface MyInterface {
+  Promise<DOMString> doSomething();
+};
+```
+
+```cpp
+class MyInterface {
+ public:
+  Promise<String> doSomething() {
+    auto p = Promise<String>([](auto& p) {
+      // This is called in the .yield() function. Every loop iteration we have
+      // a 50% chance of resolving. Once resolved, it stops calling this method.
+      if (random(0, 100) < 50) {
+        p.resolve("foo");
+      }
+    });
+    return p;
+  }
+};
+
+Promise p;
+void setup() {
+  auto x = MyInterface();
+  auto p = x.doSomething();
+  p.then([](String result) {
+    Serial.println(result);
+  });
+}
+void loop() {
+  p.yield();
+}
+```
 
 </div>
