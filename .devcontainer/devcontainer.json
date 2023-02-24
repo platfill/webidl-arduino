@@ -2,7 +2,6 @@
   "image": "mcr.microsoft.com/devcontainers/python",
   "postCreateCommand": "pipx install bikeshed && bikeshed update",
   "waitFor": "postCreateCommand",
-  "forwardPorts": [8000],
   "customizations": {
     "vscode": {
       "extensions": ["kainino.bikeshed"]
