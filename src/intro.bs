@@ -12,3 +12,48 @@ without disregarding the goals and principles of embedded systems.
     a way that is compatible with the C++ language.
 3. Consider the performance and memory constraints of embedded systems while
     working with potentially large Web IDL definitions.
+
+This specification is designed to let authors write code that conforms to
+existing WebIDL specifications like the WHATWG Fetch Standard [[FETCH]] and the
+Web Bluetooth Standard [[WEB-BLUETOOTH]] for use in embedded C++ environments.
+
+Note: This usage of Web IDL does **not** cross a language boundary. There is
+nothing that is going through an intermediate serialization or remapping step.
+All of the types, functions, and objects are defined in C++ and are directly
+accessible to C++ code.
+
+<div class="example">
+
+For example, the following WebIDL interface definition can be used to define a
+class in C++:
+
+```webidl
+[Exposed=Worker]
+interface MyInterface {
+  readonly attribute DOMString myAttribute;
+  void myMethod();
+};
+```
+
+```cpp
+#include <Arduino.h>
+
+class MyInterface {
+ private:
+  String m_myAttribute;
+ protected:
+  MyInterface() {
+    // Non-constructable from the outside.
+  }
+
+ public:
+  String myAttribute() {
+    return this->m_myAttribute;
+  }
+  void myMethod() {
+    // Do something.
+  }
+};
+```
+
+</div>

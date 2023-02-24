@@ -1,12 +1,27 @@
 <pre class="metadata">
-Title: Arduino-specific C++ language binding for WebIDL
+Title: Arduino C++ language binding for WebIDL
 Shortname: webidl-arduino
 Status: LS
+URL: about:blank
+TR: https://platfill.github.io/webidl-arduino/
 Repository: platfill/webidl-arduino
 Editor: Jacob Hummer, jcbhmr@outlook.com, https://jcbhmr.me/
 Markup Shorthands: markdown yes
 Abstract: Defines types equivalences & conventions for WebIDL to be used in Arduino C++ environments.
 </pre>
+
+<link rel="stylesheet" href="warning.css" />
+
+<!-- We want this script to run ASAP which is why it's a classic script. -->
+<script>
+  (function () {
+    "use strict";
+    const currentURL = location.href.replace(/(.*?)(\?\#)/, "$1");
+    const a = document.querySelector("body > div.head > div:nth-child(4) > dl > dd:nth-child(2) > a");
+    a.href = currentURL;
+    a.textContent = currentURL;
+  })();
+</script>
 
 <pre class="include">path: intro.bs</pre>
 <pre class="include">path: cpp-binding.bs</pre>
